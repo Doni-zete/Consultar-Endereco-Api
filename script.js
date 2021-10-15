@@ -1,30 +1,27 @@
-const express = require('express');
-const script = express();
+const cep = document.querySelector("#cep")
 
-const PORT = process.env.PORT || 8080;
-
-script.get('/equips', (req,res)=>{
-  res.json({
-    cpu:"AMD Ryzen 1700",
-    gpu:'Galax GTC',
-    mouse: 'Logitech',
-  })
-})
+const showData = (result)=>{
+    for(const campo in result){
+        if(document.querySelector("#"+campo)){
+            document.querySelector("#"+campo).value = result[campo]
+        }
+    }
+}
 
 
-script.get('/about', (req, res) => {
-  res.json({
-    Nome: 'Donizete',
-    email: 'fulando@gmail.com',
-    github: 'http://github.com',
-  })
-})
 
-script.get('/', (req, res) => {
-  res.json({
-    msg: 'OK'
-  })
-})
-script.listen(PORT, () => {
-  console.log('Servidor Rodando' + PORT);
+
+cep.addEventListener("blur",(e)=>{
+    let search = cep.value.replace("-","")
+    const options = {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'default'
+    }
+
+    fetch(`https://viacep.com.br/ws/${search}/json/`, options)
+    .then(response =>{ response.json()
+        .then( data => showData(data))
+    })
+    .catch(e => console.log('Deu Erro: '+ e,message))
 })
